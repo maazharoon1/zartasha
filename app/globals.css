@@ -282,18 +282,47 @@ figure {
   
   top: 0;
   font-family: var(--serif);
-  font-size: clamp(180px, 21.7vw, 320px);
   letter-spacing: -0.065em;
   line-height: 1;
   color: var(--ink);
   white-space: nowrap;
   pointer-events: none;
-  left: 30%;
-}
+  left: 35%;
+  font-size: 80px;
 
-@media (min-width: 1500px) {
+}
+@media (min-width: 500px) {
   .hero-name {
     left: 40%;
+  font-size: 130px;
+
+  }
+}
+
+@media (min-width: 750px) {
+  .hero-name {
+    left: 40%;
+  font-size: 150px;
+
+  }
+}
+@media (min-width: 1000px) {
+  .hero-name {
+  font-size: 170px;
+
+  }
+}
+@media (min-width: 1200px) {
+  .hero-name {
+    left: 40%;
+  font-size: 200px;
+
+  }
+}
+@media (min-width: 1500px) {
+  .hero-name {
+  font-size: 280px;
+  left: 40%;
   }
 }
 
