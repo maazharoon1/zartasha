@@ -3,7 +3,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-
+import Image from 'next/image';
+import logo from '@/public/images/logo.png';
 // Mobile menu aur selected navigation link ka state sirf yahan rehta hai.
 export function SiteHeader({ homeLinks = false }: { homeLinks?: boolean }) {
   const [menu, setMenu] = useState(false);
@@ -11,7 +12,7 @@ export function SiteHeader({ homeLinks = false }: { homeLinks?: boolean }) {
   return (
     <header className="site-header">
       <Link className="wordmark" href={homeLinks ? '/' : '#home'} aria-label="Arsal home">
-        ZARTASHA
+        <Image src={logo} alt="Zartasha Khan" width={120} height={120} />
       </Link>
       <nav
         className={menu ? 'navigation menu-open' : 'navigation'}
