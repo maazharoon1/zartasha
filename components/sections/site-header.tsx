@@ -11,7 +11,7 @@ export function SiteHeader({ homeLinks = false }: { homeLinks?: boolean }) {
   return (
     <header className="site-header">
       <Link className="wordmark" href={homeLinks ? '/' : '#home'} aria-label="Arsal home">
-        ARSAL
+        ZARTASHA
       </Link>
       <nav
         className={menu ? 'navigation menu-open' : 'navigation'}
