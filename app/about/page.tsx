@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <div id="home" className="about-page">
-      <SiteHeader />
+      <SiteHeader homeLinks={true} />
       <main id="main-content" tabIndex={-1}>
         <section
           className="about-page-hero section-pad"

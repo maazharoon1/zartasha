@@ -32,7 +32,7 @@ export function HeroSection() {
           <br />
           with a story.
         </p>
-        <a className="button button-dark" href="#projects">
+        <a className="button button-dark" href="/#projects">
           View My Work <ArrowRight size={18} aria-hidden="true" />
         </a>
       </div>
