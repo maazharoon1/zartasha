@@ -1,0 +1,27 @@
+node_modules/
+.next/
+out/
+.env*
+!.env.example
+test-results/
+tsconfig.tsbuildinfo
+# Testing aur reference files
+/reference/
+/assets/
+/public/videos/
+/public/images/bolder-mind.png
+/public/images/lumiere.png
+/public/images/nova.png
+/public/images/velora.png
+/public/images/reference-hero.jpeg
+
+# Root reference files
+/UpHeroImage.jpeg
+/Screen Recording 2026-09-30 173335.mp4
+/Portfolio_Cloudinary_Image_Naming_System.docx
+/desktop.ini
+
+# AI instructions
+/AGENTS.md
+/CLAUDE.md
+/README.md

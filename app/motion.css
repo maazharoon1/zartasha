@@ -1,0 +1,289 @@
+/* Motion timings restored from the original Arsal globals.css and polish.css. */
+:root {
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes portrait-in {
+  /* Horizontal centering uses the independent translate property in globals.css. */
+  from {
+    opacity: 0;
+    transform: translateY(35px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.reveal {
+  transition:
+    opacity 700ms var(--motion-ease),
+    transform 700ms var(--motion-ease);
+}
+.reveal.reveal-pending {
+  opacity: 0;
+  transform: translateY(26px);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.design-process-step {
+  transition-delay: calc(var(--stack-index) * 100ms);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1 > span {
+    animation: rise-in 900ms var(--motion-ease) both;
+  }
+  .hero h1 > span:nth-child(2) {
+    animation-delay: 110ms;
+  }
+  .hero h1 > span:nth-child(3) {
+    animation-delay: 220ms;
+  }
+  .hero-copy > .eyebrow,
+  .hero-copy > p,
+  .hero-copy > .button {
+    animation: rise-in 900ms 300ms var(--motion-ease) both;
+  }
+  /* Release the transform after the entrance so the button hover remains usable. */
+  .hero-copy > .button {
+    animation-fill-mode: backwards;
+  }
+  .hero-name {
+    animation: rise-in 1150ms ease both;
+  }
+  .portrait-wrap {
+    animation: portrait-in 1250ms ease both;
+  }
+  .service-detail-heading {
+    animation: rise-in 750ms var(--motion-ease) both;
+  }
+}
+.button {
+  transition:
+    transform 250ms,
+    background 250ms;
+}
+.footer-contact-button {
+  transition:
+    background 250ms ease,
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+.button svg,
+.text-link svg,
+.service-back svg,
+.footer-contact-button span {
+  transition: transform 250ms ease;
+}
+.about-story-link svg,
+.about-back-link svg {
+  transition: transform 240ms ease;
+}
+.navigation a {
+  position: relative;
+  border-bottom-color: transparent !important;
+}
+.navigation a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 0;
+  background: var(--accent);
+  transition: width 200ms;
+}
+.navigation a:hover::after,
+.navigation a.active::after {
+  width: 100%;
+}
+.service-filters button,
+.service-sibling-tabs a {
+  transition:
+    background 200ms,
+    color 200ms;
+}
+.design-process-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease,
+    border-color 300ms ease;
+}
+.design-process-icon {
+  position: relative;
+  transition:
+    transform 350ms ease,
+    background 350ms ease;
+}
+.design-process-card-line {
+  position: absolute;
+  bottom: 0;
+  left: 24px;
+  right: 24px;
+  height: 3px;
+  background: var(--accent);
+  transform: scaleX(0.22);
+  transform-origin: left;
+  transition: transform 450ms ease;
+}
+.design-process-step:last-child .design-process-card-line {
+  background: var(--on-accent);
+}
+.process-icon-ring {
+  display: none;
+}
+@media (hover: hover) {
+  .button:hover {
+    transform: translateY(-3px);
+  }
+  .footer-contact-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 15px #292b2512;
+  }
+  .button:hover svg,
+  .text-link:hover svg,
+  .footer-contact-button:hover span {
+    transform: translateX(4px);
+  }
+  .about-story-link:hover svg {
+    transform: translate(3px, -3px);
+  }
+  .service-back:hover svg,
+  .about-back-link:hover svg {
+    transform: translateX(-4px);
+  }
+  .design-process-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 18px 32px -18px #292b2550;
+    border-color: var(--accent);
+  }
+  .design-process-card:hover .design-process-icon {
+    transform: rotate(-10deg);
+    background: #6cd0d01a;
+  }
+  .design-process-card:hover .design-process-card-line {
+    transform: scaleX(1);
+  }
+}
+@media (max-width: 700px) {
+  .design-process-step {
+    transition-delay: 0ms;
+  }
+}
+@media (max-width: 700px) and (min-height: 501px) and (prefers-reduced-motion: no-preference) {
+  .process-stack {
+    row-gap: 30svh;
+    isolation: isolate;
+    align-items: start;
+    padding-bottom: 0;
+  }
+  .process-stack::after {
+    content: '';
+    height: max(120px, 15svh);
+    pointer-events: none;
+  }
+  .process-stack .design-process-step {
+    position: sticky;
+    top: calc(34px + var(--stack-index) * 12px);
+    z-index: calc(1 + var(--stack-index));
+    margin-bottom: 0;
+  }
+  .process-stack .design-process-step.reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .process-stack .design-process-card {
+    min-height: 350px;
+    border-radius: 20px;
+    transform: none;
+    transition: none;
+    box-shadow:
+      0 -8px 30px -18px #292b2545,
+      0 12px 30px -24px #292b2550;
+  }
+  .process-stack .design-process-card:hover {
+    transform: none;
+  }
+  .process-stack .design-process-icon,
+  .process-stack .design-process-card:hover .design-process-icon {
+    width: 48px;
+    height: 48px;
+    border: 0;
+    transform: none;
+    transition: none;
+    color: color-mix(
+      in srgb,
+      var(--on-accent) calc(var(--icon-progress, 0) * 100%),
+      var(--accent)
+    );
+    background: color-mix(
+      in srgb,
+      var(--accent) calc(var(--icon-progress, 0) * 100%),
+      var(--paper)
+    );
+  }
+  .process-stack .design-process-step:last-child .design-process-icon {
+    color: color-mix(
+      in srgb,
+      var(--accent) calc(var(--icon-progress, 0) * 100%),
+      var(--paper)
+    );
+    background: color-mix(
+      in srgb,
+      var(--on-accent) calc(var(--icon-progress, 0) * 100%),
+      var(--accent)
+    );
+  }
+  .process-stack .design-process-icon::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border: 1px solid #6cd0d055;
+    border-radius: 50%;
+  }
+  .process-stack .process-icon-ring {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 48px;
+    height: 48px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: calc(100 - var(--icon-progress, 0) * 100);
+    transform: rotate(-90deg);
+  }
+  .process-stack .design-process-card-line,
+  .process-stack .design-process-card:hover .design-process-card-line {
+    transform: scaleX(0.22);
+    transition: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal.reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+}
