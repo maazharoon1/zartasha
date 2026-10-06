@@ -20,7 +20,7 @@ export function HeroSection() {
           />
         ))}
       </svg>
-      <div className="hero-copy">
+      <div className="hero-copy ">
         <span className="eyebrow">GRAPHIC DESIGNER</span>
         <h1 id="hero-heading">
           <span>Think.</span>
