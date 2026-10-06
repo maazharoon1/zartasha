@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { about } from '@/data/about';
 import { ProfileSnapshot } from '@/components/profile-snapshot';
-import portrait from '@/public/images/zartasha-about.webp';
+import portrait from '@/public/images/zartasha-about.jpeg';
 
 export function AboutSection() {
   return (

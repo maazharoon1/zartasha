@@ -6,7 +6,7 @@ import { ProfileSnapshot } from '@/components/profile-snapshot';
 import { SiteHeader } from '@/components/sections/site-header';
 import { SiteFooter } from '@/components/sections/site-footer';
 import { about } from '@/data/about';
-import AboutImage from '@/public/images/zartasha-about.webp';
+import AboutImage from '@/public/images/zartasha-about.jpeg';
 
 export const metadata: Metadata = {
   title: 'About',
