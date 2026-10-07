@@ -62,7 +62,7 @@
     animation: rise-in 1150ms ease both;
   }
   .portrait-wrap {
-    animation: portrait-in 1250ms ease both;
+    animation: portrait-in 700ms var(--motion-ease) both;
   }
   .service-detail-heading {
     animation: rise-in 750ms var(--motion-ease) both;
@@ -178,11 +178,17 @@
   }
 }
 @media (max-width: 700px) {
+  .reveal {
+    transition-duration: 450ms;
+  }
+  .reveal.reveal-pending {
+    transform: translateY(14px);
+  }
   .design-process-step {
     transition-delay: 0ms;
   }
 }
-@media (max-width: 700px) and (min-height: 501px) and (prefers-reduced-motion: no-preference) {
+@media (max-width: 700px) and (min-height: 420px) and (prefers-reduced-motion: no-preference) {
   .process-stack {
     row-gap: 30svh;
     isolation: isolate;
@@ -206,7 +212,7 @@
     transition: none;
   }
   .process-stack .design-process-card {
-    min-height: 350px;
+    min-height: clamp(280px, 42svh, 350px);
     border-radius: 20px;
     transform: none;
     transition: none;

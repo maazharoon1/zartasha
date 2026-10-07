@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import logo from '@/public/images/logo.png';
@@ -9,11 +9,14 @@ import logo from '@/public/images/logo.png';
 export function SiteHeader({ homeLinks = false }: { homeLinks?: boolean }) {
   const [menu, setMenu] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
   return (
     <header className="site-header">
-      <Link className="wordmark" href={homeLinks ? '/' : '#home'} aria-label="Zartasha home">
-        <Image src={logo} alt="Zartasha Khan" width={120} height={120} />
+      <Link
+        className="wordmark"
+        href={homeLinks ? '/' : '#home'}
+        aria-label="Zartasha home"
+      >
+        <Image src={logo} alt="Zartasha Khan" width={120} height={120} sizes="120px" />
       </Link>
       <nav
         className={menu ? 'navigation menu-open' : 'navigation'}
@@ -36,19 +39,8 @@ export function SiteHeader({ homeLinks = false }: { homeLinks?: boolean }) {
             aria-current={name === 'About' && pathname === '/about' ? 'page' : undefined}
             key={id}
             href={name === 'About' ? '/about' : homeLinks ? `/#${id}` : `#${id}`}
-            onClick={(event) => {
+            onClick={() => {
               setMenu(false);
-              if (
-                homeLinks &&
-                event.button === 0 &&
-                !event.metaKey &&
-                !event.ctrlKey &&
-                !event.shiftKey &&
-                !event.altKey
-              ) {
-                event.preventDefault();
-                router.push(`/#${id}`);
-              }
             }}
           >
             {name}
@@ -61,6 +53,9 @@ export function SiteHeader({ homeLinks = false }: { homeLinks?: boolean }) {
         aria-expanded={menu}
         aria-controls="main-navigation"
         onClick={() => setMenu(!menu)}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') setMenu(false);
+        }}
       >
         {menu ? <X /> : <Menu />}
       </button>

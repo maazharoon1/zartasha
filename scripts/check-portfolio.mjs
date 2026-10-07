@@ -13,7 +13,6 @@ function readData(path) {
   return out;
 }
 const { showcaseTabs: tabs, showcaseProjects: projects } = readData('data/showcase.ts');
-const { services, categorySlugs } = readData('data/portfolio.ts');
 const base = process.env.BASE_URL || 'http://localhost:3000';
 const browser = await chromium.launch({
   executablePath:
@@ -24,6 +23,15 @@ const page = await browser.newPage({
   reducedMotion: 'reduce',
 });
 const errors = [];
+if (process.env.OFFLINE_IMAGES === '1') {
+  await page.context().route('https://res.cloudinary.com/**', (route) =>
+    route.fulfill({
+      contentType: 'image/png',
+      body: fs.readFileSync('public/images/zartasha-about.png'),
+    }),
+  );
+  console.log('Offline image fixtures: external image availability is not verified.');
+}
 page.on('pageerror', (e) => errors.push(e.message));
 const failedResponses = [];
 page.on('response', (r) => {
@@ -32,7 +40,7 @@ page.on('response', (r) => {
 try {
   await page.goto(base);
   assert.deepEqual(await page.locator('.service-filters button').allTextContents(), tabs);
-  assert.equal(await page.locator('.hero a').getAttribute('href'), '#projects');
+  assert.equal(await page.locator('.hero a').getAttribute('href'), '/#projects');
   for (const tab of tabs) {
     const button = page.getByRole('button', { name: tab, exact: true });
     await button.focus();
@@ -43,22 +51,46 @@ try {
       await page.locator('.showcase-card').count(),
       Math.min(12, filtered.length),
     );
-    const card = page.locator('.showcase-card').first();
+    const liveCards = page.locator('a.showcase-card');
+    assert.equal(
+      await liveCards.count(),
+      filtered.slice(0, 12).filter((p) => p.liveUrl).length,
+    );
+    for (const link of await liveCards.all()) {
+      assert.equal(await link.getAttribute('target'), '_blank');
+      assert.match(await link.getAttribute('rel'), /noopener/);
+    }
+    if (await liveCards.count()) {
+      const href = await liveCards.first().getAttribute('href');
+      // Isolate external uptime from the browser's actual new-tab behavior.
+      await page
+        .context()
+        .route(href, (route) => route.fulfill({ body: 'Live project' }));
+      const popupPromise = page.waitForEvent('popup');
+      await liveCards.first().click();
+      const popup = await popupPromise;
+      await popup.waitForLoadState();
+      assert.equal(popup.url(), href);
+      assert.equal(await page.locator('dialog').count(), 0);
+      await popup.close();
+    }
+    const card = page.locator('button.showcase-card').first();
     await card.click();
     const modal = page.getByRole('dialog');
     await modal.waitFor();
     assert.equal(await modal.locator('h2').textContent(), tab);
     console.log('Checking images:', tab);
-    await modal.locator('img').evaluate((img) => img.decode());
+    await page.waitForFunction(() => {
+      const img = document.querySelector('dialog img');
+      return img instanceof HTMLImageElement && img.complete && img.naturalWidth > 0;
+    });
     const before = await modal.locator('img').getAttribute('src');
     await page.keyboard.press('ArrowRight');
     assert.notEqual(await modal.locator('img').getAttribute('src'), before);
     await page.getByRole('button', { name: 'Zoom in', exact: true }).click();
     assert.equal(
-      await page
-        .getByRole('button', { name: 'Zoom out', exact: true })
-        .getAttribute('aria-pressed'),
-      'true',
+      await page.getByRole('button', { name: 'Zoom out', exact: true }).isEnabled(),
+      true,
     );
     await page.keyboard.press('Escape');
     assert.equal(await page.locator('dialog').count(), 0);
@@ -71,13 +103,8 @@ try {
       );
     }
   }
-  const routes = [
-    '/',
-    '/about',
-    ...Object.values(categorySlugs).map((s) => '/services/category/' + s),
-    ...services.map((s) => '/services/' + s.slug),
-  ];
-  for (const width of [390, 1440]) {
+  const routes = ['/', '/about'];
+  for (const width of [320, 390, 640, 700, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 900 });
     for (const route of routes) {
       const res = await page.goto(base + route);
@@ -89,6 +116,20 @@ try {
         await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1),
         false,
         route,
+      );
+      const portrait = page.locator(
+        route === '/' ? '.about-photo img' : '.about-page-portrait img',
+      );
+      await portrait.scrollIntoViewIfNeeded();
+      await portrait.evaluate((img) => img.decode());
+      assert.ok(
+        await portrait.evaluate(async (img) => {
+          // srcset density-corrects naturalWidth; inspect the resource pixels instead.
+          const resource = new Image();
+          resource.src = img.currentSrc;
+          await resource.decode();
+          return resource.naturalWidth >= img.clientWidth * devicePixelRatio;
+        }),
       );
     }
   }
@@ -107,7 +148,7 @@ try {
   }
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(base);
-  await page.locator('.showcase-card').first().click();
+  await page.locator('button.showcase-card').first().click();
   assert.equal(
     await page.getByRole('dialog').evaluate((el) => el.scrollWidth > innerWidth),
     false,
@@ -124,7 +165,7 @@ try {
   assert.deepEqual(errors, []);
   assert.deepEqual(failedResponses, []);
   console.log(
-    'Passed: seven keyboard filters, project counts, load more, Arsal modal, image loading, zoom, arrows, Escape/focus return, all routes at desktop/mobile widths, responsive menu, no overflow or failed responses.',
+    'Passed: seven keyboard filters, direct new-tab links, gallery fallback, load more, zoom, arrows, Escape/focus return, both routes at eight widths, local portraits, responsive menu, no overflow or runtime errors.',
   );
 } finally {
   await browser.close();

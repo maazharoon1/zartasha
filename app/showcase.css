@@ -9,7 +9,7 @@
   max-height: none;
   border-radius: 0;
   padding: 0;
-  background: #111e25fa;
+  background: radial-gradient(ellipse at 50% 45%, #20343c 0%, #111e25 72%);
   color: var(--ink);
   display: none;
   flex-direction: column;
@@ -53,6 +53,37 @@
   align-items: center;
   gap: 25px;
 }
+.gallery-zoom-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  padding: 0 12px 12px;
+}
+.gallery-zoom-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff08;
+  font-size: 12px;
+}
+.gallery-zoom-controls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.gallery-zoom-controls span {
+  min-width: 46px;
+  text-align: center;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
 .gallery-lightbox-tools > span {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
@@ -70,14 +101,39 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease;
+}
+.gallery-prev:hover,
+.gallery-next:hover,
+.gallery-lightbox-tools button:hover {
+  border-color: var(--accent);
+  background: #6cd0d018;
 }
 .gallery-lightbox-stage {
+  position: relative;
   display: flex;
   gap: 20px;
   align-items: center;
   min-height: 0;
   flex: 1;
   padding: 0 24px;
+}
+.gallery-prev,
+.gallery-next {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 3;
+  background: #111e25d9;
+  border-color: #6cd0d070;
+}
+.gallery-prev {
+  left: 18px;
+}
+.gallery-next {
+  right: 18px;
 }
 .gallery-lightbox-viewport {
   flex: 1;
@@ -102,19 +158,101 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  perspective: 1200px;
 }
-.gallery-lightbox-art > .service-cloud-image {
+.gallery-image-frame {
+  position: relative;
   width: 100%;
   height: 100%;
+  min-height: 0;
+  padding: 20px 56px;
+  display: grid;
+  place-items: center;
+}
+.gallery-image-frame > .service-cloud-image {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
   object-fit: contain;
   pointer-events: none;
+  opacity: 0;
 }
-.gallery-lightbox-art > .gallery-placeholder,
-.gallery-lightbox-art > .documentation-art {
-  max-width: 700px;
-  max-height: 700px;
-  aspect-ratio: 1;
-  min-height: 0;
+.gallery-image-frame.is-ready > .service-cloud-image {
+  opacity: 1;
+  filter: drop-shadow(0 16px 28px #00000035);
+}
+@keyframes gallery-turn-in {
+  from {
+    opacity: 0;
+    transform: translateX(calc(var(--gallery-direction) * 24px))
+      rotateY(calc(var(--gallery-direction) * 14deg)) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes portfolio-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gallery-image-frame.is-ready > .service-cloud-image {
+    animation: gallery-turn-in 550ms var(--motion-ease) both;
+  }
+  .portfolio-loader-ring {
+    animation: portfolio-spin 950ms linear infinite;
+  }
+}
+.portfolio-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  pointer-events: none;
+}
+.portfolio-loader-ring {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #6cd0d026;
+  border-top-color: var(--accent);
+  border-right-color: #6cd0d080;
+  border-radius: 50%;
+  box-shadow: 0 0 24px #6cd0d012;
+}
+.portfolio-loader-label {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+.portfolio-loader-compact .portfolio-loader-ring {
+  width: 28px;
+  height: 28px;
+}
+.portfolio-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.gallery-image-error {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+.gallery-image-error button {
+  margin-top: 18px;
+  min-height: 44px;
+  padding: 8px 20px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #6cd0d018;
+  color: var(--accent);
 }
 .gallery-lightbox-viewport.is-zoomed {
   cursor: grab;
@@ -175,21 +313,33 @@
   aspect-ratio: 1;
   border-radius: 13px;
   background: #223940;
+  border: 1px solid #405e6840;
 }
 .showcase-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: transform 500ms ease;
+  transition:
+    transform 500ms ease,
+    opacity 350ms ease;
+}
+.showcase-image img.is-loading {
+  opacity: 1;
+}
+.showcase-image img.is-loaded {
+  opacity: 1;
 }
 .showcase-website .showcase-image {
-  height: 400px;
+  height: clamp(220px, 25vw, 300px);
   aspect-ratio: auto;
+  padding: 12px 12px 0;
 }
 .showcase-website .showcase-image img {
   height: auto;
   object-fit: initial;
-  transition: transform 7s ease-in-out;
+  transition:
+    transform 7s ease-in-out,
+    opacity 350ms ease;
 }
 .showcase-expand {
   display: grid;
@@ -208,6 +358,11 @@
   padding-top: 12px;
   font-size: 14px;
   overflow-wrap: anywhere;
+}
+@media (max-width: 899.98px) {
+  .showcase-expand {
+    display: none;
+  }
 }
 .showcase-unavailable {
   display: grid;
@@ -270,25 +425,34 @@
     font-size: 10px;
   }
   .gallery-lightbox-tools button {
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
   }
   .gallery-lightbox .dialog-close {
     top: 17px;
     right: 13px;
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
   }
   .gallery-lightbox-stage {
     padding: 0 10px;
     gap: 6px;
   }
+  .gallery-image-frame {
+    padding: 12px 24px;
+  }
+  .gallery-prev {
+    left: 4px;
+  }
+  .gallery-next {
+    right: 4px;
+  }
   .gallery-prev,
   .gallery-next {
-    width: 30px;
-    height: 40px;
-    background: transparent;
-    border: 0;
+    width: 44px;
+    height: 44px;
+    background: #111e25db;
+    border: 1px solid #6cd0d070;
   }
   .gallery-lightbox-footer {
     padding: 17px 16px;
@@ -300,7 +464,11 @@
 }
 @media (max-width: 640px) {
   .showcase-web-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .showcase-website .showcase-image {
+    height: 240px;
+    padding: 8px 8px 0;
   }
 }
 @media (prefers-reduced-motion: reduce) {

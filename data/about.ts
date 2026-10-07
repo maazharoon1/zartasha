@@ -3,11 +3,11 @@ export const about = {
   summary:
     'I’m Zartasha Khan. I design thoughtful visual identities, print materials and digital experiences with clarity and care.',
   introduction:
-    'I’m Zartasha Khan, a designer working across branding, marketing, editorial, packaging and UI/UX. My approach brings thoughtful ideas and careful details together.',
+    'I’m Zartasha Khan. I bring brands to life through thoughtful identities, print and digital design.',
   paragraphs: [
-    'My design services connect the different ways a brand is seen: its identity, printed materials, marketing visuals and digital interfaces. I approach each format with attention to its purpose and audience.',
-    'I start with understanding the brief, then explore a visual direction through typography, colour, composition and imagery. Collaboration helps bring those choices into a coherent design.',
-    'I care about hierarchy, consistency and readability—the details that make a design feel considered and easy to use.',
+    'From brand identity to packaging and digital interfaces, I create a consistent visual language shaped around your audience.',
+    'We start with your brief, explore typography, colour and imagery, then refine the direction together.',
+    'Clarity, consistency and careful details guide every design.',
   ],
   specialties: [
     'Brand identity',

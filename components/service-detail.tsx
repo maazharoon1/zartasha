@@ -15,9 +15,9 @@ export function ServiceDetail({ service }: { service: Service }) {
       <SiteHeader />
       <main id="main-content" tabIndex={-1}>
         <section className="service-detail-intro section-pad">
-          <a href="/#projects" className="service-back">
+          <Link href="/#projects" className="service-back">
             <ArrowLeft size={16} /> All Services
-          </a>
+          </Link>
           <div className="service-detail-heading">
             <div>
               <span className="eyebrow">{service.category}</span>
@@ -50,9 +50,9 @@ export function ServiceDetail({ service }: { service: Service }) {
         </section>
         <ServiceGallery service={service} />
         <div className="service-next section-pad">
-          <a href="/#projects">
+          <Link href="/#projects">
             <ArrowLeft size={17} /> Back to all services
-          </a>
+          </Link>
           <Link href={`/services/${nextService.slug}`}>
             <span>
               <small>EXPLORE NEXT</small>

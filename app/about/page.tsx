@@ -6,12 +6,12 @@ import { ProfileSnapshot } from '@/components/profile-snapshot';
 import { SiteHeader } from '@/components/sections/site-header';
 import { SiteFooter } from '@/components/sections/site-footer';
 import { about } from '@/data/about';
-import AboutImage from '@/public/images/zartasha-about.jpeg';
+import AboutImage from '@/public/images/zartasha-about.png';
+import { aboutDescription, pageSeo } from '@/data/seo';
 
 export const metadata: Metadata = {
+  ...pageSeo('/about', 'About — Zartasha Khan', aboutDescription),
   title: 'About',
-  description:
-    'Meet Zartasha Khan, a freelance graphic designer offering brand identity, packaging, print, marketing creatives and UI/UX design.',
 };
 
 // Poora background yahan hai; homepage ka About mobile par chhota rehta hai.
@@ -45,7 +45,8 @@ export default function AboutPage() {
                 <Image
                   src={AboutImage}
                   alt="Portrait of Zartasha Khan, independent graphic designer"
-                  sizes="(max-width: 700px) 85vw, (max-width: 1100px) 36vw, 430px"
+                  sizes="(max-width: 414px) 87vw, (max-width: 700px) 360px, (max-width: 1100px) 36vw, 430px"
+                  quality={85}
                   preload
                 />
               </div>

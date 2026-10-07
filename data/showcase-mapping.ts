@@ -19,5 +19,7 @@ export const serviceShowcaseTabs: Record<string, ShowcaseTab> = {
 };
 // Cloudinary handles format/quality and responsive resizing directly; no SDK is needed.
 export function portfolioImageUrl(id: string, width: number) {
+  if (!width)
+    return `https://res.cloudinary.com/fd9kyggd/image/upload/${id.split('/').map(encodeURIComponent).join('/')}`;
   return `https://res.cloudinary.com/fd9kyggd/image/upload/f_auto,q_auto:good,c_limit,w_${width}/${id.split('/').map(encodeURIComponent).join('/')}`;
 }

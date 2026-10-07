@@ -2,6 +2,8 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   turbopack: { root: process.cwd() },
   devIndicators: false,
+  images: { qualities: [75, 85] },
+  poweredByHeader: false,
   async redirects() {
     const aliases: Record<string, string> = {
       'business-cards': 'stationery',

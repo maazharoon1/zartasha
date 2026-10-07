@@ -59,6 +59,13 @@ export function PageMotion() {
     }
     scan(document.body);
     const additions = new MutationObserver((records) => {
+      if (records.some((record) => record.removedNodes.length > 0)) {
+        observed.forEach((element) => {
+          if (element.isConnected) return;
+          observer.unobserve(element);
+          observed.delete(element);
+        });
+      }
       records.forEach((record) =>
         record.addedNodes.forEach((node) => {
           if (node instanceof Element) scan(node);

@@ -30,7 +30,7 @@ export function DesignProcessSection() {
           Thoughtful design, every step of the way.
         </p>
       </div>
-      <ol className="design-process-grid" ref={listRef}>
+      <ol className="design-process-grid process-stack" ref={listRef}>
         {designProcess.map((step, index) => {
           const Icon = stepIcons[index];
 

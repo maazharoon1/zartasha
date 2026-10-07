@@ -1,6 +1,13 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { PageMotion } from '@/components/page-motion';
+import {
+  homeDescription,
+  homeTitle,
+  pageSeo,
+  siteStructuredData,
+  siteUrl,
+} from '@/data/seo';
 import './globals.css';
 import './motion.css';
 import './showcase.css';
@@ -31,10 +38,10 @@ const serif = localFont({
 });
 // Browser tab ka title aur search engine description yahan set hota hai.
 export const metadata: Metadata = {
+  ...pageSeo('/', homeTitle, homeDescription),
+  metadataBase: new URL(siteUrl),
   icons: { icon: { url: '/images/zartasha.webp', type: 'image/webp' } },
-  title: { default: 'Zartasha Khan — Design Portfolio', template: '%s — Zartasha Khan' },
-  description:
-    'Zartasha Khan’s design portfolio: branding, marketing design, UI/UX, editorial, packaging, print and illustration.',
+  title: { default: homeTitle, template: '%s — Zartasha Khan' },
 };
 // Har page isi shared HTML structure ke andar render hota hai.
 export default function RootLayout({
@@ -42,7 +49,17 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+      </head>
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteStructuredData).replace(/</g, '\\u003c'),
+          }}
+        />
         <a className="skip-link" href="#main-content">
           Skip to content
         </a>

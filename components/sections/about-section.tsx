@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { about } from '@/data/about';
 import { ProfileSnapshot } from '@/components/profile-snapshot';
-import portrait from '@/public/images/zartasha-about.jpeg';
+import portrait from '@/public/images/zartasha-about.png';
 
 export function AboutSection() {
   return (
@@ -18,7 +18,8 @@ export function AboutSection() {
             <Image
               src={portrait}
               alt="Portrait of Zartasha Khan"
-              sizes="(max-width: 700px) 104px, (max-width: 1100px) 150px, 240px"
+              sizes="(max-width: 700px) 104px, (max-width: 1100px) 150px, (max-width: 1600px) 22vw, 352px"
+              quality={85}
             />
           </figure>
           <div className="about-introduction">

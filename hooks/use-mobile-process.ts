@@ -8,7 +8,7 @@ export function useMobileProcess() {
     const list = listRef.current;
     if (!list) return;
     const media = window.matchMedia(
-      '(max-width: 700px) and (min-height: 501px) and (prefers-reduced-motion: no-preference)',
+      '(max-width: 700px) and (min-height: 420px) and (prefers-reduced-motion: no-preference)',
     );
     const steps = Array.from(list.querySelectorAll<HTMLElement>('.design-process-step'));
     const cards = steps.map((step) =>
@@ -18,19 +18,24 @@ export function useMobileProcess() {
     let enabled = false;
     let listening = false;
     let inView = false;
+    const lastProgress = steps.map(() => '');
+    let stickyStops: number[] = [];
     function paint() {
       frame = 0;
       if (!enabled || !inView) return;
       const start = window.innerHeight * 0.85;
       // Original Arsal progress curve; read all positions before writing styles.
-      const progress = steps.map((step) => {
+      const progress = steps.map((step, index) => {
         const top = step.getBoundingClientRect().top;
-        const stop = Number.parseFloat(getComputedStyle(step).top) || 0;
+        const stop = stickyStops[index] || 0;
         return Math.max(0, Math.min(1, (start - top) / Math.max(1, start - stop)));
       });
-      steps.forEach((step, index) =>
-        step.style.setProperty('--icon-progress', progress[index].toFixed(3)),
-      );
+      steps.forEach((step, index) => {
+        const value = progress[index].toFixed(3);
+        if (lastProgress[index] === value) return;
+        step.style.setProperty('--icon-progress', value);
+        lastProgress[index] = value;
+      });
     }
     function schedule() {
       if (!frame) frame = requestAnimationFrame(paint);
@@ -38,8 +43,16 @@ export function useMobileProcess() {
     function configure() {
       enabled =
         media.matches &&
-        cards.every((card) => card.offsetHeight + 100 < window.innerHeight);
+        cards.every(
+          (card, index) =>
+            Math.max(280, card.scrollHeight) + 34 + index * 12 + 16 < window.innerHeight,
+        );
       list!.classList.toggle('process-stack', enabled);
+      if (enabled) {
+        stickyStops = steps.map(
+          (step) => Number.parseFloat(getComputedStyle(step).top) || 0,
+        );
+      }
       if (enabled && inView && !listening) {
         window.addEventListener('scroll', schedule, { passive: true });
         listening = true;
@@ -49,8 +62,9 @@ export function useMobileProcess() {
         listening = false;
       }
       if (!enabled)
-        steps.forEach((step) => {
+        steps.forEach((step, index) => {
           step.style.removeProperty('--icon-progress');
+          lastProgress[index] = '';
         });
       schedule();
     }

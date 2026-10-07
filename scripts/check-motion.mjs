@@ -11,6 +11,15 @@ const executablePath =
 const browser = await chromium.launch({ executablePath, headless: true });
 const base = process.env.BASE_URL || 'http://localhost:3000';
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+if (process.env.OFFLINE_IMAGES === '1') {
+  await context.route('https://res.cloudinary.com/**', (route) =>
+    route.fulfill({
+      contentType: 'image/png',
+      body: fs.readFileSync('public/images/zartasha-about.png'),
+    }),
+  );
+  console.log('External image requests use local fixtures for motion checks.');
+}
 const page = await context.newPage();
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
@@ -56,6 +65,27 @@ try {
   );
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(base);
+  await page.evaluate(() => document.fonts.ready);
+  for (const width of [320, 390, 544, 700]) {
+    await page.setViewportSize({ width, height: 844 });
+    const geometry = await page.evaluate(() => {
+      const portrait = document.querySelector('.portrait-wrap').getBoundingClientRect();
+      const name = document.querySelector('.hero-name').getBoundingClientRect();
+      return {
+        portraitCenter: portrait.left + portrait.width / 2,
+        nameCenter: name.left + name.width / 2,
+        overflowing: document.documentElement.scrollWidth > innerWidth,
+        sideLinkHidden:
+          getComputedStyle(document.querySelector('.hero-copy .button')).display ===
+          'none',
+      };
+    });
+    assert.ok(Math.abs(geometry.portraitCenter - width / 2) < 1);
+    assert.ok(Math.abs(geometry.nameCenter - width / 2) < 1);
+    assert.equal(geometry.overflowing, false);
+    assert.equal(geometry.sideLinkHidden, true);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.waitForFunction(() => document.querySelector('.process-stack'));
   const listTop = await page
     .locator('.design-process-grid')
@@ -96,6 +126,28 @@ try {
     'none',
     'Original mobile stack must not shrink or tilt the cards',
   );
+  const thirdTop = await page
+    .locator('.design-process-step')
+    .nth(2)
+    .evaluate((el) => el.getBoundingClientRect().top + scrollY);
+  await page.evaluate(
+    (top) => scrollTo({ top: top - 58, behavior: 'instant' }),
+    thirdTop,
+  );
+  await page.waitForTimeout(150);
+  const stackTops = await page
+    .locator('.design-process-step')
+    .evaluateAll((items) =>
+      items.slice(0, 3).map((item) => Math.round(item.getBoundingClientRect().top)),
+    );
+  assert.deepEqual(stackTops, [34, 46, 58], 'Cards must overlap in a visible stack');
+  assert.equal(await page.locator('.process-icon-ring').first().isVisible(), true);
+  fs.mkdirSync('test-results', { recursive: true });
+  await page.screenshot({ path: 'test-results/mobile-process-stack.png' });
+  await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+  await page
+    .locator('.hero')
+    .screenshot({ path: 'test-results/mobile-centered-hero.png' });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForFunction(() => !document.querySelector('.process-stack'));
   assert.equal(
@@ -113,6 +165,8 @@ try {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.waitForFunction(() => document.querySelector('.process-stack'));
   await page.setViewportSize({ width: 390, height: 480 });
+  await page.waitForFunction(() => document.querySelector('.process-stack'));
+  await page.setViewportSize({ width: 390, height: 360 });
   await page.waitForFunction(() => !document.querySelector('.process-stack'));
   assert.equal(
     await page
