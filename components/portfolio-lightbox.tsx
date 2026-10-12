@@ -132,7 +132,7 @@ export function PortfolioLightbox({
       ref={dialog}
       className="gallery-lightbox"
       aria-labelledby="gallery-title"
-      aria-describedby="gallery-description"
+      aria-describedby={current.project.title ? 'gallery-description' : undefined}
       onCancel={onClose}
       onKeyDown={(event) => {
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -144,7 +144,9 @@ export function PortfolioLightbox({
       <header className="gallery-lightbox-header">
         <div>
           <h2 id="gallery-title">{current.project.filter}</h2>
-          <p id="gallery-description">{current.project.title}</p>
+          {current.project.title && (
+            <p id="gallery-description">{current.project.title}</p>
+          )}
         </div>
         <div className="gallery-lightbox-tools">
           <span aria-live="polite">

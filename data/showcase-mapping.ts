@@ -2,7 +2,7 @@
 import type { ShowcaseTab } from '@/data/showcase';
 export const categoryShowcaseTabs: Record<ServiceCategory, ShowcaseTab[]> = {
   Branding: ['Logo Design', 'Brand Identity & Guide', 'stationery Design'],
-  'Marketing Design': ['Flyers & Brochures'],
+  'Marketing Design': ['Flyers & Brochures', 'Social Media Post'],
   'UI/UX Design': ['UI/UX Design'],
   'Editorial Design': ['Book Cover'],
   'Packaging & Print': ['Packaging Design', 'stationery Design', 'Flyers & Brochures'],
@@ -15,6 +15,7 @@ export const serviceShowcaseTabs: Record<string, ShowcaseTab> = {
   stationery: 'stationery Design',
   packaging: 'Packaging Design',
   'flyers-brochures': 'Flyers & Brochures',
+  'social-media-post': 'Social Media Post',
   editorials: 'Book Cover',
 };
 // Cloudinary handles format/quality and responsive resizing directly; no SDK is needed.

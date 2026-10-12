@@ -6,12 +6,13 @@ export const showcaseTabs = [
   'stationery Design',
   'Packaging Design',
   'Flyers & Brochures',
+  'Social Media Post',
   'Book Cover',
 ] as const;
 export type ShowcaseTab = (typeof showcaseTabs)[number];
 export type ShowcaseProject = {
   id: string;
-  title: string;
+  title?: string;
   filter: ShowcaseTab;
   mainImage: string;
   images: string[];
@@ -1264,5 +1265,155 @@ export const showcaseProjects: ShowcaseProject[] = [
     filter: 'Book Cover',
     mainImage: 'BC19',
     images: ['BC19'],
+  },
+  {
+    id: 'SSM06',
+    filter: 'Social Media Post',
+    mainImage: 'SSM06',
+    images: ['SSM06'],
+  },
+  {
+    id: 'SSM16',
+    filter: 'Social Media Post',
+    mainImage: 'SSM16',
+    images: ['SSM16'],
+  },
+  {
+    id: 'SSM17',
+    filter: 'Social Media Post',
+    mainImage: 'SSM17',
+    images: ['SSM17'],
+  },
+  {
+    id: 'SSM18',
+    filter: 'Social Media Post',
+    mainImage: 'SSM18',
+    images: ['SSM18'],
+  },
+  {
+    id: 'SSM19',
+    filter: 'Social Media Post',
+    mainImage: 'SSM19',
+    images: ['SSM19'],
+  },
+  {
+    id: 'SSM07',
+    filter: 'Social Media Post',
+    mainImage: 'SSM07',
+    images: ['SSM07'],
+  },
+  {
+    id: 'SSM08',
+    filter: 'Social Media Post',
+    mainImage: 'SSM08',
+    images: ['SSM08'],
+  },
+  {
+    id: 'SSM09',
+    filter: 'Social Media Post',
+    mainImage: 'SSM09',
+    images: ['SSM09'],
+  },
+  {
+    id: 'SSM10',
+    filter: 'Social Media Post',
+    mainImage: 'SSM10',
+    images: ['SSM10'],
+  },
+  {
+    id: 'SSM11',
+    filter: 'Social Media Post',
+    mainImage: 'SSM11',
+    images: ['SSM11'],
+  },
+  {
+    id: 'SSM12',
+    filter: 'Social Media Post',
+    mainImage: 'SSM12',
+    images: ['SSM12'],
+  },
+  {
+    id: 'SSM13',
+    filter: 'Social Media Post',
+    mainImage: 'SSM13',
+    images: ['SSM13'],
+  },
+  {
+    id: 'SSM14',
+    filter: 'Social Media Post',
+    mainImage: 'SSM14',
+    images: ['SSM14'],
+  },
+  {
+    id: 'SSM15',
+    filter: 'Social Media Post',
+    mainImage: 'SSM15',
+    images: ['SSM15'],
+  },
+  {
+    id: 'SSM01',
+    filter: 'Social Media Post',
+    mainImage: 'SSM01',
+    images: ['SSM01'],
+  },
+  {
+    id: 'SSM02',
+    filter: 'Social Media Post',
+    mainImage: 'SSM02',
+    images: ['SSM02'],
+  },
+  {
+    id: 'SSM03',
+    filter: 'Social Media Post',
+    mainImage: 'SSM03',
+    images: ['SSM03'],
+  },
+  {
+    id: 'SSM04',
+    filter: 'Social Media Post',
+    mainImage: 'SSM04',
+    images: ['SSM04'],
+  },
+  {
+    id: 'SSM05',
+    filter: 'Social Media Post',
+    mainImage: 'SSM05',
+    images: ['SSM05'],
+  },
+  {
+    id: 'SSM20',
+    filter: 'Social Media Post',
+    mainImage: 'SSM20',
+    images: ['SSM20'],
+  },
+  {
+    id: 'SSM21',
+    filter: 'Social Media Post',
+    mainImage: 'SSM21',
+    images: ['SSM21'],
+  },
+  {
+    id: 'SSM22',
+    filter: 'Social Media Post',
+    mainImage: 'SSM22',
+    images: ['SSM22'],
+  },
+  {
+    id: 'SSM23',
+    filter: 'Social Media Post',
+    mainImage: 'SSM23',
+    images: ['SSM23'],
+  },
+  {
+    id: 'SSM24',
+    filter: 'Social Media Post',
+    mainImage: 'SSM24',
+    images: ['SSM24'],
+  },
+  {
+    id: 'SSM25',
+    filter: 'Social Media Post',
+    mainImage: 'SSM25',
+    images: ['SSM25'],
   },
 ];

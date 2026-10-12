@@ -12,6 +12,7 @@ const showcaseTabHashes: Record<ShowcaseTab, string> = {
   'stationery Design': 'stationery',
   'Packaging Design': 'packaging',
   'Flyers & Brochures': 'flyers-brochures',
+  'Social Media Post': 'social-media-post',
   'Book Cover': 'book-cover',
 };
 
@@ -93,7 +94,15 @@ export function PortfolioSection({ category }: { category?: ServiceCategory }) {
             ))}
           </div>
           <div id="portfolio-results">
-            <PortfolioShowcase key={filter} projects={filtered} />
+            {filtered.length > 0 ? (
+              <PortfolioShowcase key={filter} projects={filtered} />
+            ) : (
+              <p className="portfolio-note" role="status">
+                {filter === 'Social Media Post'
+                  ? 'Social media posts coming soon.'
+                  : 'Portfolio work for this category will be added when available.'}
+              </p>
+            )}
           </div>
         </>
       ) : (
