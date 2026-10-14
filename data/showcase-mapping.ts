@@ -6,7 +6,7 @@ export const categoryShowcaseTabs: Record<ServiceCategory, ShowcaseTab[]> = {
   'UI/UX Design': ['UI/UX Design'],
   'Editorial Design': ['Book Cover'],
   'Packaging & Print': ['Packaging Design', 'stationery Design', 'Flyers & Brochures'],
-  Illustrations: [],
+  Illustrations: ['Illustration'],
 };
 export const serviceShowcaseTabs: Record<string, ShowcaseTab> = {
   'ui-ux-design': 'UI/UX Design',
@@ -17,6 +17,7 @@ export const serviceShowcaseTabs: Record<string, ShowcaseTab> = {
   'flyers-brochures': 'Flyers & Brochures',
   'social-media-post': 'Social Media Post',
   editorials: 'Book Cover',
+  illustrations: 'Illustration',
 };
 // Cloudinary handles format/quality and responsive resizing directly; no SDK is needed.
 export function portfolioImageUrl(id: string, width: number) {

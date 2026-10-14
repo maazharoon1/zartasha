@@ -1,28 +1,41 @@
-node_modules/
-.next/
-out/
-.env*
+# Dependencies and generated Next.js output
+/node_modules/
+/.next/
+/out/
+/next-env.d.ts
+/tsconfig.tsbuildinfo
+
+# Generated test reports and coverage
+/test-results/
+/playwright-report/
+/coverage/
+
+# Local environment settings; keep useful templates
+.env
+.env.*
 !.env.example
-test-results/
-tsconfig.tsbuildinfo
-# Testing aur reference files
-/reference/
-/assets/
-/public/videos/
-/public/images/bolder-mind.png
-/public/images/lumiere.png
-/public/images/nova.png
-/public/images/velora.png
-/public/images/reference-hero.jpeg
+!.env.*.example
 
-# Root reference files
-/UpHeroImage.jpeg
-/Screen Recording 2026-09-30 173335.mp4
-/Portfolio_Cloudinary_Image_Naming_System.docx
-/desktop.ini
+# Local deployment metadata and tool caches
+/.vercel/
+/.cache/
+/.eslintcache
 
-# AI instructions
-/AGENTS.md
-/CLAUDE.md
-/README.md
-/ref
+# Package-manager debug logs
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+/pnpm-debug.log*
+
+# Local editor/OS artifacts; shared editor configuration stays trackable
+/.idea/
+/.history/
+/.vscode/*.local.json
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Existing local design references (retained, not application assets)
+/ref/

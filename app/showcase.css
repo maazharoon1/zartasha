@@ -477,3 +477,65 @@
     transition: none;
   }
 }
+
+/* Cover images for the current project, independent of the zoom viewport. */
+.gallery-lightbox-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.gallery-thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 116px;
+  flex-shrink: 0;
+  padding: 12px;
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+}
+.gallery-thumbnail {
+  display: block;
+  flex-shrink: 0;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: #223940;
+  opacity: 0.65;
+}
+.gallery-thumbnail[aria-current='true'],
+.gallery-thumbnail:hover,
+.gallery-thumbnail:focus-visible {
+  border-color: var(--accent);
+  opacity: 1;
+}
+.gallery-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+@media (max-width: 700px) {
+  .gallery-lightbox-body {
+    flex-direction: column;
+  }
+  .gallery-thumbnails {
+    order: 2;
+    flex-direction: row;
+    width: 100%;
+    height: 84px;
+    gap: 8px;
+    padding: 8px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+  }
+  .gallery-thumbnail {
+    width: 88px;
+    height: 66px;
+  }
+}

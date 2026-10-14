@@ -109,6 +109,12 @@ export function PortfolioLightbox({
     handlers,
   } = useGalleryZoom();
   const current = items[index];
+  const projectStart = items.findIndex((item) => item.project.id === current.project.id);
+  function selectImage(nextIndex: number) {
+    setDirection(nextIndex >= index ? 1 : -1);
+    setIndex(nextIndex);
+    resetZoom();
+  }
   useEffect(() => {
     const node = dialog.current;
     const trigger =
@@ -177,37 +183,62 @@ export function PortfolioLightbox({
         <button onClick={fitWidth}>Fit width</button>
         <button onClick={resetZoom}>Fit image</button>
       </div>
-      <div className="gallery-lightbox-stage">
-        <button
-          className="gallery-prev"
-          aria-label="Previous image"
-          onClick={() => change(-1)}
-        >
-          <ArrowLeft size={24} />
-        </button>
-        <div
-          className={`gallery-lightbox-viewport ${zoomed ? 'is-zoomed' : ''} ${dragging ? 'is-dragging' : ''}`}
-          ref={viewport}
-          {...handlers}
-          onDragStart={(event) => event.preventDefault()}
-        >
-          <div className="gallery-lightbox-art" style={{ transform: transform }}>
-            <GalleryImage
-              key={index}
-              src={current.src}
-              alt={current.project.title || `${current.project.filter} project preview`}
-              direction={direction}
-              fullResolution={zoomed}
-            />
+      <div className="gallery-lightbox-body">
+        {current.project.images.length > 1 && (
+          <nav className="gallery-thumbnails" aria-label="Project images">
+            {current.project.images.map((src, imageIndex) => (
+              <button
+                key={src}
+                type="button"
+                className="gallery-thumbnail"
+                aria-label={`Show project image ${imageIndex + 1}`}
+                aria-current={current.src === src ? 'true' : undefined}
+                onClick={() => selectImage(projectStart + imageIndex)}
+              >
+                <img
+                  src={portfolioImageUrl(src, 160)}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  width={160}
+                  height={120}
+                />
+              </button>
+            ))}
+          </nav>
+        )}
+        <div className="gallery-lightbox-stage">
+          <button
+            className="gallery-prev"
+            aria-label="Previous image"
+            onClick={() => change(-1)}
+          >
+            <ArrowLeft size={24} />
+          </button>
+          <div
+            className={`gallery-lightbox-viewport ${zoomed ? 'is-zoomed' : ''} ${dragging ? 'is-dragging' : ''}`}
+            ref={viewport}
+            {...handlers}
+            onDragStart={(event) => event.preventDefault()}
+          >
+            <div className="gallery-lightbox-art" style={{ transform: transform }}>
+              <GalleryImage
+                key={index}
+                src={current.src}
+                alt={current.project.title || `${current.project.filter} project preview`}
+                direction={direction}
+                fullResolution={zoomed}
+              />
+            </div>
           </div>
+          <button
+            className="gallery-next"
+            aria-label="Next image"
+            onClick={() => change(1)}
+          >
+            <ArrowRight size={24} />
+          </button>
         </div>
-        <button
-          className="gallery-next"
-          aria-label="Next image"
-          onClick={() => change(1)}
-        >
-          <ArrowRight size={24} />
-        </button>
       </div>
       <footer className="gallery-lightbox-footer">
         <span>

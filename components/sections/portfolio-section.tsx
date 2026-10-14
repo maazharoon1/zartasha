@@ -14,6 +14,7 @@ const showcaseTabHashes: Record<ShowcaseTab, string> = {
   'Flyers & Brochures': 'flyers-brochures',
   'Social Media Post': 'social-media-post',
   'Book Cover': 'book-cover',
+  Illustration: 'illustration',
 };
 
 export function PortfolioSection({ category }: { category?: ServiceCategory }) {
