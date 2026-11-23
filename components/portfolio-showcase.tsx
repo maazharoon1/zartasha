@@ -55,8 +55,7 @@ function ShowcaseCard({
     };
   }, [loaded, failed, original]);
   const website = project.filter === 'UI/UX Design';
-  const title =
-    project.title || `${project.filter} project ${project.id.replace(/\D/g, '')}`;
+  const { title } = project;
   useEffect(() => {
     const box = viewport.current;
     const img = box?.querySelector('img');
@@ -102,7 +101,7 @@ function ShowcaseCard({
             }
             sizes={
               website
-                ? '(max-width: 700px) 42vw, (max-width: 1100px) 43vw, 22vw'
+                ? '(max-width: 1100px) 48vw, (max-width: 1239px) 31vw, 24vw'
                 : '(max-width: 700px) 42vw, 28vw'
             }
             alt={title}
@@ -114,11 +113,14 @@ function ShowcaseCard({
             onError={() => (original ? setFailed(true) : setOriginal(true))}
           />
         )}
-        <span className="showcase-expand">
-          <ArrowUpRight size={20} aria-hidden="true" />
+      </span>
+      <span className="showcase-caption-row">
+        <span className="showcase-caption">{title}</span>
+        <span className="showcase-expand" aria-hidden="true">
+          <ArrowUpRight />
+          <ArrowUpRight />
         </span>
       </span>
-      {project.title && <span className="showcase-caption">{project.title}</span>}
     </>
   );
   const className = `showcase-card ${website ? 'showcase-website' : ''}`;

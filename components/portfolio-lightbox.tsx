@@ -109,6 +109,7 @@ export function PortfolioLightbox({
     handlers,
   } = useGalleryZoom();
   const current = items[index];
+  const title = current.project.imageTitles?.[current.src] ?? current.project.title;
   const projectStart = items.findIndex((item) => item.project.id === current.project.id);
   function selectImage(nextIndex: number) {
     setDirection(nextIndex >= index ? 1 : -1);
@@ -138,7 +139,7 @@ export function PortfolioLightbox({
       ref={dialog}
       className="gallery-lightbox"
       aria-labelledby="gallery-title"
-      aria-describedby={current.project.title ? 'gallery-description' : undefined}
+      aria-describedby="gallery-description"
       onCancel={onClose}
       onKeyDown={(event) => {
         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
@@ -148,12 +149,7 @@ export function PortfolioLightbox({
       }}
     >
       <header className="gallery-lightbox-header">
-        <div>
-          <h2 id="gallery-title">{current.project.filter}</h2>
-          {current.project.title && (
-            <p id="gallery-description">{current.project.title}</p>
-          )}
-        </div>
+        <h2 id="gallery-title">{current.project.filter}</h2>
         <div className="gallery-lightbox-tools">
           <span aria-live="polite">
             {index + 1} / {items.length}
@@ -225,7 +221,7 @@ export function PortfolioLightbox({
               <GalleryImage
                 key={index}
                 src={current.src}
-                alt={current.project.title || `${current.project.filter} project preview`}
+                alt={title}
                 direction={direction}
                 fullResolution={zoomed}
               />
@@ -241,15 +237,14 @@ export function PortfolioLightbox({
         </div>
       </div>
       <footer className="gallery-lightbox-footer">
-        <span>
-          {current.project.liveUrl ? (
+        <div className="gallery-lightbox-caption">
+          <span id="gallery-description" aria-live="polite">{title}</span>
+          {current.project.liveUrl && (
             <a href={current.project.liveUrl} target="_blank" rel="noopener noreferrer">
               Visit website ↗
             </a>
-          ) : (
-            current.project.title
           )}
-        </span>
+        </div>
         <span>
           Scroll or pinch to zoom · Drag to explore · Double-click to fit · ← → to browse
           · Esc to close
