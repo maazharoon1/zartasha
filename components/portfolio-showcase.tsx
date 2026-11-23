@@ -101,7 +101,7 @@ function ShowcaseCard({
             }
             sizes={
               website
-                ? '(max-width: 1100px) 48vw, (max-width: 1239px) 31vw, 24vw'
+                ? '(max-width: 1100px) 44vw, 29vw'
                 : '(max-width: 700px) 42vw, 28vw'
             }
             alt={title}
