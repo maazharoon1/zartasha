@@ -1,6 +1,6 @@
 ﻿'use client';
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { ArrowLeft, ArrowRight, X, ZoomIn, ZoomOut } from 'lucide-react';
 import type { ShowcaseProject } from '@/data/showcase';
 import { portfolioImageUrl } from '@/data/showcase-mapping';
@@ -12,11 +12,13 @@ function GalleryImage({
   alt,
   direction,
   fullResolution,
+  lazy = false,
 }: {
   src: string;
   alt: string;
   direction: number;
   fullResolution: boolean;
+  lazy?: boolean;
 }) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [attempt, setAttempt] = useState(0);
@@ -29,13 +31,14 @@ function GalleryImage({
       setStatus('ready');
       return;
     }
+    if (lazy && attempt === 0) return;
     const timeout = setTimeout(() => {
       if (img?.complete && img.naturalWidth > 0) setStatus('ready');
       else if (!original) setOriginal(true);
       else setStatus('error');
     }, 10000);
     return () => clearTimeout(timeout);
-  }, [status, original, attempt]);
+  }, [status, original, attempt, lazy]);
   return (
     <div
       className={`gallery-image-frame is-${status}`}
@@ -69,6 +72,7 @@ function GalleryImage({
           className="service-cloud-image"
           src={portfolioImageUrl(src, original || fullResolution ? 0 : 1920)}
           alt={alt}
+          loading={lazy && attempt === 0 ? 'lazy' : undefined}
           decoding="async"
           onLoad={() => setStatus('ready')}
           onError={() => (original ? setStatus('error') : setOriginal(true))}
@@ -96,6 +100,9 @@ export function PortfolioLightbox({
   );
   const [direction, setDirection] = useState(1);
   const dialog = useRef<HTMLDialogElement>(null);
+  const imageStack = useRef<HTMLDivElement>(null);
+  const thumbnails = useRef<HTMLElement>(null);
+  const stackStartPage = useRef(0);
   const {
     viewport,
     zoomed,
@@ -109,10 +116,35 @@ export function PortfolioLightbox({
     handlers,
   } = useGalleryZoom();
   const current = items[index];
-  const title = current.project.imageTitles?.[current.src] ?? current.project.title;
-  const projectStart = items.findIndex((item) => item.project.id === current.project.id);
-  function selectImage(nextIndex: number) {
-    setDirection(nextIndex >= index ? 1 : -1);
+  const { project } = current;
+  const title = project.imageTitles?.[current.src] ?? project.title;
+  const projectStart = items.findIndex((item) => item.project.id === project.id);
+  const pageIndex = index - projectStart;
+  const scrollable =
+    project.filter === 'Brand Identity & Guide' && project.images.length > 1;
+
+  useLayoutEffect(() => {
+    const stack = imageStack.current;
+    if (stack) stack.scrollTop = stackStartPage.current * stack.clientHeight;
+  }, [projectStart, scrollable]);
+
+  useEffect(() => {
+    if (!scrollable) return;
+    thumbnails.current?.children[pageIndex]?.scrollIntoView({
+      block: 'nearest',
+      inline: 'nearest',
+    });
+  }, [pageIndex, projectStart, scrollable]);
+
+  function selectImage(nextIndex: number, nextDirection = nextIndex >= index ? 1 : -1) {
+    const nextProject = items[nextIndex].project;
+    if (nextProject === project && imageStack.current) {
+      const stack = imageStack.current;
+      stack.scrollTop = (nextIndex - projectStart) * stack.clientHeight;
+    } else if (nextProject !== project) {
+      stackStartPage.current = nextProject.images.indexOf(items[nextIndex].src);
+    }
+    setDirection(nextDirection);
     setIndex(nextIndex);
     resetZoom();
   }
@@ -130,9 +162,7 @@ export function PortfolioLightbox({
     };
   }, []);
   function change(direction: number) {
-    setDirection(direction);
-    setIndex((value) => (value + direction + items.length) % items.length);
-    resetZoom();
+    selectImage((index + direction + items.length) % items.length, direction);
   }
   return (
     <dialog
@@ -180,9 +210,13 @@ export function PortfolioLightbox({
         <button onClick={resetZoom}>Fit image</button>
       </div>
       <div className="gallery-lightbox-body">
-        {current.project.images.length > 1 && (
-          <nav className="gallery-thumbnails" aria-label="Project images">
-            {current.project.images.map((src, imageIndex) => (
+        {project.images.length > 1 && (
+          <nav
+            ref={thumbnails}
+            className="gallery-thumbnails"
+            aria-label="Project images"
+          >
+            {project.images.map((src, imageIndex) => (
               <button
                 key={src}
                 type="button"
@@ -203,7 +237,9 @@ export function PortfolioLightbox({
             ))}
           </nav>
         )}
-        <div className="gallery-lightbox-stage">
+        <div
+          className={`gallery-lightbox-stage ${scrollable ? 'gallery-scroll-stage' : ''}`}
+        >
           <button
             className="gallery-prev"
             aria-label="Previous image"
@@ -211,9 +247,41 @@ export function PortfolioLightbox({
           >
             <ArrowLeft size={24} />
           </button>
+          {scrollable && (
+            <div
+              key={project.id}
+              ref={imageStack}
+              className={`gallery-image-stack ${zoomed ? 'gallery-stage-hidden' : ''}`}
+              role="region"
+              aria-label="Scrollable project images"
+              tabIndex={0}
+              inert={zoomed}
+              onScroll={(event) => {
+                const { scrollTop, clientHeight } = event.currentTarget;
+                if (!clientHeight || zoomed) return;
+                const page = Math.min(
+                  project.images.length - 1,
+                  Math.round(scrollTop / clientHeight),
+                );
+                setIndex(projectStart + Math.max(0, page));
+              }}
+            >
+              {project.images.map((src, imageIndex) => (
+                <GalleryImage
+                  key={src}
+                  src={src}
+                  alt={project.imageTitles?.[src] ?? project.title}
+                  direction={1}
+                  fullResolution={false}
+                  lazy={imageIndex > 0}
+                />
+              ))}
+            </div>
+          )}
           <div
-            className={`gallery-lightbox-viewport ${zoomed ? 'is-zoomed' : ''} ${dragging ? 'is-dragging' : ''}`}
+            className={`gallery-lightbox-viewport ${zoomed ? 'is-zoomed' : ''} ${dragging ? 'is-dragging' : ''} ${scrollable && !zoomed ? 'gallery-stage-hidden' : ''}`}
             ref={viewport}
+            inert={scrollable && !zoomed}
             {...handlers}
             onDragStart={(event) => event.preventDefault()}
           >
@@ -238,7 +306,9 @@ export function PortfolioLightbox({
       </div>
       <footer className="gallery-lightbox-footer">
         <div className="gallery-lightbox-caption">
-          <span id="gallery-description" aria-live="polite">{title}</span>
+          <span id="gallery-description" aria-live="polite">
+            {title}
+          </span>
           {current.project.liveUrl && (
             <a href={current.project.liveUrl} target="_blank" rel="noopener noreferrer">
               Visit website ↗
@@ -246,8 +316,9 @@ export function PortfolioLightbox({
           )}
         </div>
         <span>
-          Scroll or pinch to zoom · Drag to explore · Double-click to fit · ← → to browse
-          · Esc to close
+          {scrollable && !zoomed
+            ? 'Scroll to browse · ← → to jump between images · Esc to close'
+            : 'Scroll or pinch to zoom · Drag to explore · Double-click to fit · ← → to browse · Esc to close'}
         </span>
       </footer>
     </dialog>

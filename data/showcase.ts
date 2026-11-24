@@ -2433,13 +2433,7 @@ export const showcaseProjects: ShowcaseProject[] = [
     mainImage: 'Sfl49',
     images: ['Sfl49'],
   },
-  {
-    id: 'Sfl50',
-    title: 'Agtermont Expedition ',
-    filter: 'Flyers & Brochures',
-    mainImage: 'Sfl50',
-    images: ['Sfl50'],
-  },
+ 
   {
     id: 'Sfl51',
     title: 'Agtermont Expedition ',
@@ -2635,6 +2629,13 @@ export const showcaseProjects: ShowcaseProject[] = [
     filter: 'Flyers & Brochures',
     mainImage: 'Sfl78',
     images: ['Sfl78'],
+  },
+   {
+    id: 'Sfl50',
+    title: 'Agtermont Expedition ',
+    filter: 'Flyers & Brochures',
+    mainImage: 'Sfl50',
+    images: ['Sfl50'],
   },
   {
     id: 'Sfl79',
